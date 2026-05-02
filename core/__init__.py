@@ -27,6 +27,7 @@ from core import ev
 from core import regime
 from core import shadow
 from core import shadow_live
+from core import gate
 
 __all__ = [
     "Direction",
@@ -51,4 +52,5 @@ __all__ = [
     "regime",
     "shadow",
     "shadow_live",
+    "gate",
 ]
