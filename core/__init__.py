@@ -25,6 +25,7 @@ from core import confidence
 from core import probability as prob_engine
 from core import ev
 from core import regime
+from core import shadow
 
 __all__ = [
     "Direction",
@@ -47,4 +48,5 @@ __all__ = [
     "prob_engine",
     "ev",
     "regime",
+    "shadow",
 ]

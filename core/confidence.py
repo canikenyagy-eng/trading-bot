@@ -24,12 +24,15 @@ class ConfidenceEngine:
     
     def calculate_confidence(
         self,
-        signal: SignalEvaluation
+        signal: SignalEvaluation,
+        update_signal: bool = True
     ) -> float:
         """Calculate overall confidence for a signal.
         
         Args:
             signal: SignalEvaluation
+            update_signal: If True, update signal's confidence_components and confidence.
+                         Set to False for shadow scoring (non-disruptive).
             
         Returns:
             Confidence score (0.0 to 1.0)
@@ -37,11 +40,12 @@ class ConfidenceEngine:
         # Get confidence components
         components = self.calculate_components(signal)
         
-        # Update signal
-        signal.confidence_components = components
-        signal.confidence = components.overall
+        # Only update signal if requested (default for main flow)
+        if update_signal:
+            signal.confidence_components = components
+            signal.confidence = components.overall
         
-        return signal.confidence
+        return components.overall
     
     def calculate_components(
         self,
