@@ -26,6 +26,7 @@ from core import probability as prob_engine
 from core import ev
 from core import regime
 from core import shadow
+from core import shadow_live
 
 __all__ = [
     "Direction",
@@ -49,4 +50,5 @@ __all__ = [
     "ev",
     "regime",
     "shadow",
+    "shadow_live",
 ]
