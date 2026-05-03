@@ -1,6 +1,8 @@
 """Analytics package."""
 
-from analytics import journaling
-from analytics import performance
+# Deferred imports to avoid circular dependencies
+def get_signal_formatter():
+    from analytics.telegram_formatter import SignalFormatter
+    return SignalFormatter
 
-__all__ = ["journaling", "performance"]
+__all__ = ["get_signal_formatter"]
