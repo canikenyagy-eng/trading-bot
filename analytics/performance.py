@@ -8,7 +8,10 @@ from typing import List, Dict, Optional, Any
 from dataclasses import dataclass
 import statistics
 
-from analytics.journaling import TradeJournal
+# Deferred import to avoid circular dependency
+def get_trade_journal():
+    from analytics.journaling import TradeJournal
+    return TradeJournal
 
 
 @dataclass
@@ -61,13 +64,11 @@ class PerformanceMetrics:
 class PerformanceAnalyzer:
     """Analyzer for trading performance."""
     
-    def __init__(self, journal: Optional[TradeJournal] = None):
+    def __init__(self, journal=None):
+        TradeJournal = get_trade_journal()
         self.journal = journal or TradeJournal()
     
-    def calculate_metrics(
-        self,
-        outcomes: Optional[List[Dict]] = None
-    ) -> PerformanceMetrics:
+    def calculate_metrics(self, outcomes=None) -> PerformanceMetrics:
         """Calculate comprehensive metrics."""
         outcomes = outcomes or self.journal.outcomes
         
