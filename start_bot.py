@@ -1,6 +1,5 @@
 """Quick Telegram Bot Starter."""
 import asyncio
-import os
 from telegram import Bot
 from telegram.error import TimedOut
 
