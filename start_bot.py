@@ -1,7 +1,18 @@
 """Quick Telegram Bot Starter."""
 import asyncio
-from telegram import Bot
-from telegram.error import TimedOut
+import sys
+
+# Check Python version
+print(f"Python: {sys.version.split()[0]}")
+
+# Import telegram
+try:
+    from telegram import Bot
+    from telegram.error import TimedOut
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Install: /Library/Frameworks/Python.framework/Versions/3.11/bin/pip install python-telegram-bot")
+    sys.exit(1)
 
 # === КОНФИГУРАЦИЯ ===
 TOKEN = "8608494961:AAGHrERt8b4MIgTWeaqg-Qn3K-XNo6GzZAQ"
