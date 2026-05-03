@@ -14,6 +14,10 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 import asyncio
 
+# Telegram Bot Token and Chat ID
+TELEGRAM_BOT_TOKEN = "8608494961:AAGHrERt8b4MIgTWeaqg-Qn3K-XNo6GzZAQ"
+TELEGRAM_CHAT_ID = "1916051263"
+
 from telegram import (
     Bot, Update, InlineKeyboardButton, InlineKeyboardMarkup,
     KeyboardButton, ReplyKeyboardMarkup
@@ -187,9 +191,9 @@ async def run_bot(token: str, chat_id: str) -> None:
 
 
 # Sync wrapper for easier use
-def run_bot_sync(token: str, chat_id: str) -> None:
+def run_bot_sync() -> None:
     """Run bot synchronously."""
-    asyncio.run(run_bot(token, chat_id))
+    asyncio.run(run_bot(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID))
 
 
 # Telegram Bot End
