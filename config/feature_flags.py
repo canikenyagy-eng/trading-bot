@@ -66,4 +66,15 @@ MIN_CONFIDENCE = 0.3
 MIN_PROBABILITY = 0.35
 MIN_EV = -0.1
 
+# Selection & Optimization
+ENABLE_FINAL_SELECTION = True  # Final signal selection
+TOP_N_SIGNALS = 3  # Keep top N signals per cycle
+ENABLE_EV_DOMINANCE = True  # EV-dominant scoring
+ENABLE_PATH_SCORING = True  # Liquidity path scoring
+ENABLE_PROBABILITY_EV_LINK = True  # EV-Probability consistency
+ENABLE_FEATURE_EDGE_WEIGHTING = True  # Analytics-based weights
+ENABLE_INTERACTION_BOOST = True  # Combination boost
+ENABLE_PORTFOLIO_CONTROL = True  # Portfolio risk control
+ENABLE_SIGNAL_COMPETITION = True  # Intra-symbol competition
+
 # Feature Flags end
