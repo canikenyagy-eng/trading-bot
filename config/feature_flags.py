@@ -13,6 +13,19 @@ ENABLE_MITIGATION = True   # Mitigation zone detection
 ENABLE_STRUCTURE = True   # BOS/CHOCH detection
 ENABLE_LIQUIDITY = True    # Liquidity pool detection
 
+# Priority 1 - Statistical Enhancement
+ENABLE_FEATURE_NORMALIZATION = True  # Statistical percentile normalization
+ENABLE_DISPLACEMENT = True      # Impulse/displacement strength
+ENABLE_LIQUIDITY_PATH = True     # Liquidity path modeling
+
+# Priority 2 - Advanced
+ENABLE_OPPORTUNITY_FILTER = True  # Opportunity cost filtering
+ENABLE_SIGNAL_DECAY = True   # Signal freshness decay
+ENABLE_FEATURE_INTERACTIONS = True  # Feature combination tracking
+
+# Probability Enhancement
+ENABLE_PROBABILITY_CALIBRATION = True  # Calibrated win rates
+
 # Advanced Scoring
 ENABLE_REGIME = True       # Market regime detection
 ENABLE_PROBABILITY = True # Win probability estimation
@@ -21,8 +34,6 @@ ENABLE_SCENARIOS = True   # Scenario analysis
 ENABLE_ADAPTIVE_RR = True  # Adaptive Risk/Reward
 
 # Advanced Features
-ENABLE_SIGNAL_DECAY = True      # Signal freshness scoring
-ENABLE_OPPORTUNITY_FILTER = True # Opportunity cost filtering
 ENABLE_CLUSTERING = True        # Signal clustering
 ENABLE_NARRATIVE_CHECK = True    # Narrative consistency
 
