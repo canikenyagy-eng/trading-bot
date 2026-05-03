@@ -75,7 +75,7 @@ class FVGDetector:
         
         # Check recent bars for FVG pattern
         for i in range(len(highs) - 3, max(0, len(highs) - self.lookback) - 1, -1):
-            # Bearish FVG: low of current bar > high of bar 2 ago
+            # Bullish FVG: low of current bar > high of bar 2 ago (gap up)
             gap_low = lows[i]  # Current bar low
             gap_high = highs[i - 2]  # Bar 2 ago high
             
@@ -92,10 +92,10 @@ class FVGDetector:
                         size=size,
                         age=age,
                         filled=self._is_filled(gap_high, gap_low, current_price),
-                        direction="bearish"
+                        direction="bullish"  # FIXED: gap up = bullish
                     )
             
-            # Bullish FVG: high of current bar < low of bar 2 ago
+            # Bearish FVG: high of current bar < low of bar 2 ago (gap down)
             gap_high = highs[i]  # Current bar high
             gap_low = lows[i - 2]  # Bar 2 ago low
             
@@ -112,7 +112,7 @@ class FVGDetector:
                         size=size,
                         age=age,
                         filled=self._is_filled(gap_high, gap_low, current_price),
-                        direction="bullish"
+                        direction="bearish"  # FIXED: gap down = bearish
                     )
         
         return None
