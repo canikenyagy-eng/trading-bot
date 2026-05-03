@@ -72,9 +72,18 @@ TOP_N_SIGNALS = 3  # Keep top N signals per cycle
 ENABLE_EV_DOMINANCE = True  # EV-dominant scoring
 ENABLE_PATH_SCORING = True  # Liquidity path scoring
 ENABLE_PROBABILITY_EV_LINK = True  # EV-Probability consistency
-ENABLE_FEATURE_EDGE_WEIGHTING = True  # Analytics-based weights
+ENABLE_FEATURE_EDGE_WEighting = True  # Analytics-based weights
 ENABLE_INTERACTION_BOOST = True  # Combination boost
 ENABLE_PORTFOLIO_CONTROL = True  # Portfolio risk control
 ENABLE_SIGNAL_COMPETITION = True  # Intra-symbol competition
+
+# Calibration & Quality (NEW)
+ENABLE_TRUE_CALIBRATION = True  # Empirical probability calibration
+ENABLE_EDGE_STABILITY = True  # Variance penalty
+ENABLE_SIGNAL_CLUSTERING = True  # Cluster similar signals
+ENABLE_RELATIVE_SELECTION = True  # Relative to best in batch
+ENABLE_TIME_EFFICIENCY = True  # Time efficiency penalty
+ENABLE_MFE_MAE_LOGIC = True  # MFE/MAE in decisions
+ENABLE_DYNAMIC_THRESHOLDS = True  # Adaptive thresholds
 
 # Feature Flags end
