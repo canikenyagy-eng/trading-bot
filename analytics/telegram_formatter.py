@@ -30,13 +30,29 @@ class SignalFormatter:
         "info": "ℹ️",
     }
     
-    def __init__(self, verbose: bool = True):
+    def __init__(self, verbose: bool = True, use_html: bool = True):
         """Initialize formatter.
         
         Args:
             verbose: If True, use FULL format. If False, use SHORT.
+            use_html: If True, use HTML. If False, use Markdown.
         """
         self.verbose = verbose
+        self.use_html = use_html
+    
+    def _wrap(self, text: str, bold: bool = False) -> str:
+        """Wrap text with formatting."""
+        if self.use_html:
+            return f"<b>{text}</b>" if bold else text
+        else:
+            return f"*{text}*" if bold else text
+    
+    def _wrap_code(self, text: str) -> str:
+        """Wrap text as code."""
+        if self.use_html:
+            return f"<code>{text}</code>"
+        else:
+            return f"`{text}`"
     
     def format_signal(
         self,
@@ -61,8 +77,8 @@ class SignalFormatter:
         """Format SHORT signal message."""
         direction_emoji = self.EMOJI.get(signal.direction.value, "📊")
         
-        # Entry line
-        entry_line = f"{direction_emoji} *{signal.direction.value.upper()}* {signal.symbol}"
+        # Entry line with bold wrap for emoji
+        entry_line = f"{direction_emoji} {self._wrap(signal.direction.value.upper(), bold=True)} {signal.symbol}"
         
         # Levels
         levels = [
@@ -86,7 +102,7 @@ class SignalFormatter:
         # Rejection reasons
         if signal.is_rejected:
             lines.append("")
-            lines.append("❌ *REJECTED*")
+            lines.append("❌ REJECTED")
             for reason in signal.rejection_reasons:
                 lines.append(f"  • {reason}")
         
@@ -98,13 +114,16 @@ class SignalFormatter:
         
         # Header
         lines = [
-            f"{direction_emoji} *{signal.direction.value.upper()}* {signal.symbol}",
-            f"ID: `{signal.signal_id}`",
+            f"{direction_emoji} {self._wrap(signal.direction.value.upper(), bold=True)} {signal.symbol}",
+            f"ID: {self._wrap_code(signal.signal_id)}",
             "",
         ]
         
-        # Levels section
-        lines.append("📊 *LEVELS*")
+        # Use helper for section headers
+        def section(title):
+            return f"📊 {self._wrap(title, bold=True)}"
+        
+        lines.append(section("LEVELS"))
         lines.append(f"Entry: {signal.entry:.5f}")
         lines.append(f"Stop: {signal.sl:.5f}")
         if signal.tp_levels:
@@ -114,7 +133,7 @@ class SignalFormatter:
         lines.append("")
         
         # Quality section
-        lines.append(f"🎯 *QUALITY*")
+        lines.append(section("QUALITY"))
         lines.append(f"Grade: {signal.setup_grade.value}")
         lines.append(f"Confidence: {signal.confidence:.0%}")
         lines.append(f"Timing: {signal.timing.value}")
@@ -123,7 +142,7 @@ class SignalFormatter:
         if signal.confidence_components:
             cc = signal.confidence_components
             lines.append("")
-            lines.append("📊 *Confidence Breakdown*")
+            lines.append(section("BREAKDOWN"))
             lines.append(f"Structure: {cc.structure:.0%}")
             lines.append(f"Liquidity: {cc.liquidity:.0%}")
             lines.append(f"Entry: {cc.entry_quality:.0%}")
@@ -133,7 +152,7 @@ class SignalFormatter:
         if signal.probabilities:
             pr = signal.probabilities
             lines.append("")
-            lines.append("🎲 *Probabilities*")
+            lines.append("🎲 Probabilities")
             lines.append(f"TP Hit: {pr.tp_hit:.0%}")
             lines.append(f"SL Hit: {pr.sl_hit:.0%}")
         
@@ -141,18 +160,18 @@ class SignalFormatter:
         if signal.expected_value != 0:
             lines.append("")
             ev_emoji = "🟢" if signal.expected_value > 0 else "🔴"
-            lines.append(f"{ev_emoji} *EV*: {signal.expected_value:.2f}")
+            lines.append(f"{ev_emoji} EV: {signal.expected_value:.2f}")
         
         # Market Context
         lines.append("")
-        lines.append("🌊 *Market Context*")
+        lines.append("🌊 Market Context")
         lines.append(f"Regime: {signal.regime.value}")
         lines.append(f"Phase: {signal.market_phase.value}")
         
         # Features
         if signal.features:
             lines.append("")
-            lines.append("🔍 *Features*")
+            lines.append("🔍 Features")
             for name, feature in signal.features.items():
                 status = "✅" if feature.present else "❌"
                 lines.append(f"{status} {name}: {feature.strength:.0%}")
@@ -160,7 +179,7 @@ class SignalFormatter:
         # Narrative
         if include_narrative and signal.narrative:
             lines.append("")
-            lines.append("📝 *Narrative*")
+            lines.append("📝 Narrative")
             if signal.narrative.htf_bias:
                 lines.append(f"HTF: {signal.narrative.htf_bias}")
             if signal.narrative.structure_state:
@@ -169,7 +188,7 @@ class SignalFormatter:
         # Rejection
         if signal.is_rejected:
             lines.append("")
-            lines.append("❌ *REJECTED*")
+            lines.append("❌ REJECTED")
             for reason in signal.rejection_reasons:
                 lines.append(f"  • {reason}")
         
@@ -180,7 +199,7 @@ class SignalFormatter:
         if not signals:
             return "No signals available."
         
-        lines = [f"📊 *Signals* ({len(signals)})", ""]
+        lines = [f"📊 Signals ({len(signals)})", ""]
         
         for i, signal in enumerate(signals[:max_count]):
             emoji = self.EMOJI.get(signal.direction.value, "📊")
@@ -196,7 +215,7 @@ class SignalFormatter:
     
     def format_performance_summary(self, metrics: Dict[str, Any]) -> str:
         """Format performance metrics summary."""
-        lines = ["📊 *Performance Summary*", ""]
+        lines = ["📊 Performance Summary", ""]
         
         if "win_rate" in metrics:
             lines.append(f"Win Rate: {metrics['win_rate']:.1%}")
