@@ -175,6 +175,13 @@ class TradingSystem:
 
 def main():
     """Main entry point."""
+    # Fix for Python 3.14 - create event loop
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        asyncio.new_event_loop()
+        asyncio.set_event_loop(asyncio.new_event_loop())
+    
     system = TradingSystem()
     
     try:
