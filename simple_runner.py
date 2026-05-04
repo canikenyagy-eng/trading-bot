@@ -165,26 +165,38 @@ async def send_telegram(message: str, config: Config):
         return
     
     try:
-        # Import telegram - avoid local telegram folder conflict
-        import sys
-        import os
+        # Use subprocess to avoid local telegram package conflict
+        import subprocess
+        import json
         
-        # Temporarily change path to avoid local telegram folder
-        old_path = sys.path.copy()
-        sys.path = [p for p in sys.path if 'telegram' not in p.lower()]
+        # Create a temporary script to send message
+        script = f'''
+import asyncio
+from telegram import Bot
+
+async def main():
+    bot = Bot(token="{config.TOKEN}")
+    await bot.send_message(
+        chat_id="{config.CHAT_ID}",
+        text={repr(message)},
+        parse_mode="HTML"
+    )
+
+asyncio.run(main())
+'''
         
-        from telegram import Bot
-        
-        # Restore path
-        sys.path = old_path
-        
-        bot = Bot(token=config.TOKEN)
-        await bot.send_message(
-            chat_id=config.CHAT_ID,
-            text=message,
-            parse_mode="HTML"
+        result = subprocess.run(
+            ['python3', '-c', script],
+            capture_output=True,
+            text=True,
+            cwd='/tmp'  # Run from /tmp to avoid local telegram folder
         )
-        print(f"✅ Sent to Telegram!")
+        
+        if result.returncode == 0:
+            print(f"✅ Sent to Telegram!")
+        else:
+            print(f"❌ Error: {result.stderr}")
+            
     except Exception as e:
         print(f"❌ Telegram error: {e}")
 
