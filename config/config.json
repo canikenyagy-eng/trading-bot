@@ -1,0 +1,42 @@
+{
+  "ib": {
+    "host": "127.0.0.1",
+    "port": 7497,
+    "client_id": 1,
+    "paper_port": 7497,
+    "live_port": 7496
+  },
+  "symbols": {
+    "forex": ["EURUSD", "GBPUSD", "USDJPY"],
+    "metals": ["XAUUSD"],
+    "crypto": ["BTCUSD"]
+  },
+  "data": {
+    "tick_window": 100,
+    "bar_history": 100,
+    "bar_interval": "1 min"
+  },
+  "strategy": {
+    "rsi_period": 14,
+    "ema_fast": 20,
+    "ema_slow": 50,
+    "oversold": 30,
+    "overbought": 70
+  },
+  "risk": {
+    "max_position_size": 10,
+    "max_daily_loss": 500,
+    "stop_loss_pct": 0.02,
+    "take_profit_pct": 0.04
+  },
+  "execution": {
+    "order_timeout": 30,
+    "retry_attempts": 3
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/ib_system.log",
+    "max_bytes": 10485760,
+    "backup_count": 5
+  }
+}
