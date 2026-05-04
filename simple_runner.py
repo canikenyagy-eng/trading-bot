@@ -43,11 +43,50 @@ class Config:
 
 
 # ============================================================================
-# DATA GENERATOR (SIMULATION)
+# DATA - REAL MARKET DATA
 # ============================================================================
 
+def get_market_data(symbol: str, bars: int = 100) -> Dict:
+    """Get real market data from Yahoo Finance."""
+    
+    # Yahoo Finance symbols
+    symbol_map = {
+        "EURUSD": "EURUSD=X",
+        "GBPUSD": "GBPUSD=X",
+        "USDJPY": "JPY=X",
+        "XAUUSD": "GC=F",  # Gold futures
+    }
+    
+    yahoo_symbol = symbol_map.get(symbol, symbol + "=X")
+    
+    try:
+        import yfinance as yf
+        
+        ticker = yf.Ticker(yahoo_symbol)
+        data = ticker.history(period="5d", interval="1h")
+        
+        if data.empty:
+            return generate_market_data(symbol, bars)
+        
+        return {
+            "symbol": symbol,
+            "timeframe": "H1",
+            "opens": data["Open"].tolist()[-bars:],
+            "highs": data["High"].tolist()[-bars:],
+            "lows": data["Low"].tolist()[-bars:],
+            "closes": data["Close"].tolist()[-bars:],
+            "volumes": data["Volume"].tolist()[-bars:],
+            "bid": data["Close"].iloc[-1] - 0.0001,
+            "ask": data["Close"].iloc[-1] + 0.0001,
+        }
+        
+    except Exception as e:
+        print(f"  ⚠️  Data error for {symbol}: {e}")
+        return generate_market_data(symbol, bars)
+
+
 def generate_market_data(symbol: str, bars: int = 100) -> Dict:
-    """Generate simulated market data."""
+    """Fallback: generate simulated market data."""
     
     # Base prices
     base_prices = {
@@ -279,8 +318,8 @@ async def main():
             signals_found = 0
             
             for symbol in config.SYMBOLS:
-                # Generate data
-                data = generate_market_data(symbol)
+                # Get real market data
+                data = get_market_data(symbol)
                 
                 # Generate signal
                 signal = generate_signal(data)
