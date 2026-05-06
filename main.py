@@ -89,9 +89,6 @@ class TradingSystem:
         for symbol in all_symbols:
             self.data_feed.subscribe(symbol)
             self.strategy.add_symbol(symbol)
-        
-        # Order events via IB
-        self.ib.orderEvent += self._on_order
     
     def _on_tick(self, ticker):
         """Handle tick event."""
@@ -106,15 +103,6 @@ class TradingSystem:
             
             if sig and sig.direction != "FLAT":
                 self._process_signal(sig)
-    
-    def _on_order(self, order):
-        """Handle order event."""
-        self.execution.on_order_status(
-            order.orderId,
-            order.status,
-            order.filled,
-            order.avgFillPrice
-        )
     
     def _process_signal(self, sig):
         """Process trading signal."""
