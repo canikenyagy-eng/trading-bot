@@ -90,7 +90,7 @@ class TradingSystem:
             self.data_feed.subscribe(symbol)
             self.strategy.add_symbol(symbol)
         
-        self.ib.tickEvent += self._on_tick
+        # Order events via IB
         self.ib.orderEvent += self._on_order
     
     def _on_tick(self, ticker):
@@ -155,7 +155,9 @@ class TradingSystem:
         sys_signal.signal(sys_signal.SIGINT, self._shutdown)
         sys_signal.signal(sys_signal.SIGTERM, self._shutdown)
         
-        self.ib.run()
+        # Keep running - IB will invoke callbacks via events
+        while self._running:
+            self.ib.sleep(1)
     
     def _shutdown(self, signum, frame):
         """Graceful shutdown."""
