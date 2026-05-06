@@ -66,7 +66,15 @@ class DataFeed:
             return
         
         contract = ib_contract(symbol, sec_type, exchange)
-        self.ib.reqMktData(101 + len(self._subscribed), contract, "", True, False)
+        
+        # Request market data - returns ticker which hooks into events
+        ticker = self.ib.reqMktData(contract, "", True, False)
+        
+        # Hook into the ticker's update event
+        def on_tick(ticker):
+            self._on_tick(ticker)
+        
+        ticker.updateEvent += on_tick
         
         self._contracts[symbol] = contract
         self._tick_queues[symbol] = deque(maxlen=self.config["data"]["tick_window"])
@@ -74,20 +82,27 @@ class DataFeed:
         
         logger.info(f"Subscribed to {symbol}")
     
-    def on_tick(self, ticker: Ticker):
+    def on_tick(self, ticker):
         """Handle tick update event - non-blocking."""
-        symbol = ticker.contract.symbol
-        
-        tick = TickData(
-            symbol=symbol,
-            bid=ticker.bid,
-            ask=ticker.ask,
-            last=ticker.last,
-            volume=ticker.volume,
-            timestamp=ticker.time
-        )
-        
-        self._tick_queues[symbol].append(tick)
+        try:
+            # ticker can be tuple (tickerId, contract) or just ticker object
+            if isinstance(ticker, tuple):
+                ticker = ticker[0]
+            
+            symbol = getattr(ticker.contract, 'symbol', 'UNKNOWN') if ticker.contract else 'UNKNOWN'
+            
+            tick = TickData(
+                symbol=symbol,
+                bid=ticker.bid or 0.0,
+                ask=ticker.ask or 0.0,
+                last=ticker.last or 0.0,
+                volume=ticker.volume or 0,
+                timestamp=ticker.time or 0.0
+            )
+            
+            self._tick_queues[symbol].append(tick)
+        except Exception as e:
+            pass
     
     def get_tick(self, symbol: str) -> Optional[TickData]:
         """Get latest tick."""
